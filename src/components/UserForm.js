@@ -1,57 +1,58 @@
-import React, {useState, useEffect} from 'react'
+import React, { Component } from 'react';
 
-const UserForm = ({selectedUser, onSave, onCancel}) => {
-  const [user, setUser] = useState({
-    id: '',
+class UserForm extends Component {
+  state = {
     name: '',
     email: '',
-    department: '',
-  })
+  };
 
-  useEffect(() => {
-    if (selectedUser) {
-      setUser(selectedUser)
-    } else {
-      setUser({id: '', name: '', email: '', department: ''})
+  componentDidUpdate(prevProps) {
+    if (this.props.user && this.props.user !== prevProps.user) {
+      const { name, email } = this.props.user;
+      this.setState({ name, email });
     }
-  }, [selectedUser])
-
-  const handleSubmit = e => {
-    e.preventDefault()
-    if (!user.name || !user.email) {
-      alert('Name and Email are required!')
-      return
-    }
-    onSave(user)
   }
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <h2>{selectedUser ? 'Edit User' : 'Add User'}</h2>
-      <input
-        type="text"
-        placeholder="Name"
-        value={user.name}
-        onChange={e => setUser({...user, name: e.target.value})}
-      />
-      <input
-        type="email"
-        placeholder="Email"
-        value={user.email}
-        onChange={e => setUser({...user, email: e.target.value})}
-      />
-      <input
-        type="text"
-        placeholder="Department"
-        value={user.department}
-        onChange={e => setUser({...user, department: e.target.value})}
-      />
-      <button type="submit">{selectedUser ? 'Update' : 'Add'}</button>
-      <button type="button" onClick={onCancel}>
-        Cancel
-      </button>
-    </form>
-  )
+  handleChange = (e) => {
+    this.setState({ [e.target.name]: e.target.value });
+  };
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    const { name, email } = this.state;
+    const newUser = {
+      id: this.props.user?.id || Date.now(),
+      name,
+      email,
+    };
+    this.props.onSubmit(newUser);
+    this.setState({ name: '', email: '' });
+  };
+
+  render() {
+    const { name, email } = this.state;
+    return (
+      <form onSubmit={this.handleSubmit}>
+        <input
+          type="text"
+          name="name"
+          placeholder="Name"
+          value={name}
+          onChange={this.handleChange}
+        />
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={email}
+          onChange={this.handleChange}
+        />
+        <button type="submit">
+          {this.props.isEditing ? 'Update User' : 'Add User'}
+        </button>
+      </form>
+    );
+  }
 }
 
-export default UserForm
+export default UserForm;
