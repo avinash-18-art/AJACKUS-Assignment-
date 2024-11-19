@@ -18,7 +18,7 @@ A simple React-based web application to manage users. It allows users to view, a
 - Mock Backend API: JSONPlaceholder
 - Styling: CSS
 
-1. git clone https://github.com/yourusername/user-management-app.git cd user-management-app
+1. git clone https://github.com/avinash-18-art/AJACKUS-Assignment-.git cd user-management-app
 
 2. npm install
 
